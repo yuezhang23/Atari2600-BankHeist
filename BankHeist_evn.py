@@ -14,7 +14,7 @@ gym.register_envs(ale_py)
 env = gym.make('BankHeist-v4', frameskip=1)
 env = AtariPreprocessing(env,
                     noop_max=30,
-                    frame_skip=1,
+                    frame_skip=4,
                     screen_size=84,
                     terminal_on_life_loss=False,
                     grayscale_obs=False,
