@@ -6,7 +6,9 @@ import torch
 import torch.nn as nn
 from Preprocess_env import AtariPreprocessing
 import matplotlib.pyplot as plt
+from cnn import cnn
 
+np.set_printoptions(threshold=np.inf)
 
 ale = ALEInterface()
 ale.setInt('random_seed', 0)
@@ -22,7 +24,7 @@ env = AtariPreprocessing(env,
                     scale_obs=True)
 
 obs, info= env.reset(seed=10)
-np.set_printoptions(threshold=np.inf)
+
 print(obs)
 for _ in range(1):
     action_counter = 0
