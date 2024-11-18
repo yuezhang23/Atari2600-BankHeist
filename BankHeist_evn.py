@@ -39,5 +39,5 @@ for _ in range(1):
 env.close()
 
 obs, info = env.reset(seed=10)
-plt.imshow(obs, cmap='gray')  # 'gray' colormap for grayscale images
+plt.imshow(obs)
 plt.show()
