@@ -1,27 +1,29 @@
 import numpy as np
 from PolicyNetwork import *
 from PN_Reinforcement import *
+from Preprocess_env import AtariPreprocessing
 import ale_py
 from ale_py import ALEInterface
 import gymnasium as gym
 import numpy as np
-from Preprocess_env import AtariPreprocessing
 import time
+
 
 ale = ALEInterface()
 ale.setInt('random_seed', 0)
 gym.register_envs(ale_py)
-env = gym.make('BankHeist-v4',frameskip=1, render_mode='human')
+env = gym.make('BankHeist-v4',frameskip=1)
 env = AtariPreprocessing(env,
                     noop_max=30,
-                    frame_skip=5,
+                    frame_skip=4,
                     screen_size=84,
                     terminal_on_life_loss=False,
-                    grayscale_obs=True, # set true
+                    # set true
+                    grayscale_obs=True, 
                     grayscale_newaxis=False,
                     scale_obs=True)
 
-# wrapped env for recodring episode statistics
+# wrapped env for recording episode statistics
 env = gym.wrappers.RecordEpisodeStatistics(env, 50)  
 pre_obs, info= env.reset(seed=5)
 reward_over_episodes = []
@@ -35,9 +37,8 @@ def train_policy_gradient(env, episodes, input_dim, output_dim):
       
         done = False
         total_reward = 0
-        action = np.random.randint(2, 6)
-        pre_state = state
-        pre_diff = 0
+        # pre_state = state
+        # pre_diff = 0
         start = time.time() 
         while not done:
             # diff = (state - pre_state).sum()
@@ -50,11 +51,12 @@ def train_policy_gradient(env, episodes, input_dim, output_dim):
             # pre_diff = diff
             action = agent.sample_action(state, total_reward)
             state, reward, terminated, truncated, info = env.step(action)
-            num_of_lives = info["lives"]
+            # num_of_lives = info["lives"]
             
             # 0.1 as a hyperparameter to penalize losing a life
             # print("time diff", time.time() - start)
-            agent.rewards.append(reward - 0.1 * (4 - num_of_lives) - (time.time() - start) * 0.001)
+            agent.rewards.append(reward)
+            # agent.rewards.append(reward - 0.1 * (4 - num_of_lives) - (time.time() - start) * 0.001)
             total_reward += reward
             
             # env.render()
@@ -62,13 +64,17 @@ def train_policy_gradient(env, episodes, input_dim, output_dim):
             if done:
                 break
 
+            if episode % 100 == 0:
+                torch.save(agent.net.state_dict(), f'bank_heist_model_checkpoint_{episode}.pth')
+
         reward_over_episodes.append(env.return_queue[-1])
         agent.update()
         time_spent = time.time() - start
         print(f"Episode {episode + 1}/{episodes} completed.")
         print("time spent", time_spent, "rewards", total_reward)
+    return agent
    
 obs, info = env.reset(seed=10)
 input_dim = np.prod(obs.shape)  
 output_dim = 18  
-model1 = train_policy_gradient(env, episodes=100000, input_dim=input_dim, output_dim=output_dim)
+model1 = train_policy_gradient(env, episodes=10000, input_dim=input_dim, output_dim=output_dim)

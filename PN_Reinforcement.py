@@ -1,12 +1,13 @@
 import torch
-import numpy as np
 from PolicyNetwork import *  
+import numpy as np
 import torch.nn.functional as F
 from torch.distributions import Categorical
 
+
 class REINFORCE:
 
-    def __init__(self, obs_space_dims: int, action_space_dims: int):
+    def __init__(self, obs_space_dims: tuple, action_space_dims: int):
 
         self.learning_rate = 1e-3  
         self.gamma = 0.99  
@@ -15,7 +16,8 @@ class REINFORCE:
         self.probs = []  
         self.rewards = []  
 
-        self.net = PolicyNetwork(obs_space_dims, action_space_dims, use_lstm=True)  
+        # Update: Initialize the PolicyNetwork with CNN input dimensions
+        self.net = PolicyNetwork(obs_space_dims, action_space_dims, use_lstm=False)  
         self.optimizer = torch.optim.AdamW(self.net.parameters(), lr=self.learning_rate)
 
         # LSTM hidden state
@@ -25,14 +27,15 @@ class REINFORCE:
         self.hidden_state = None
 
     def sample_action(self, state: np.ndarray, score: int) -> int:
-        # state = torch.tensor(state, dtype=torch.float32).flatten().unsqueeze(0)  
-        state = torch.tensor(state, dtype=torch.float32).unsqueeze(0)  
 
+        state = torch.tensor(state, dtype=torch.float32).unsqueeze(0)  # Shape: (1, H, W)
+
+        # Forward pass through the policy network
         action_logits, self.hidden_state = self.net(state, score, self.hidden_state)  
 
         # Create a categorical distribution over actions
         distrib = Categorical(logits=action_logits)
-        # Sample an action from the distribution, need to decide when to be greedy
+        # Sample an action from the distribution
         action = distrib.sample()  
         prob = distrib.log_prob(action)  
 
@@ -44,7 +47,7 @@ class REINFORCE:
         running_g = 0
         gs = []
 
-        # Compute discounted returns (backwards) - [::-1] will return an array in reverse
+        # Compute discounted returns (backwards)
         for R in self.rewards[::-1]:
             running_g = R + self.gamma * running_g
             gs.insert(0, running_g)
@@ -52,7 +55,7 @@ class REINFORCE:
         deltas = torch.tensor(gs, dtype=torch.float32)
         log_probs = torch.stack(self.probs)
 
-        # Compute the total loss by summing the element-wise products of log probs and rewards
+        # Compute the total loss
         loss = -torch.sum(log_probs * deltas)  
 
         # Update the policy network
