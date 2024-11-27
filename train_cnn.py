@@ -120,7 +120,7 @@ def main():
             # Epsilon-greedy choice of action
             if random.random() < epsilon:
                 # action = env.action_space.sample()
-                action = random.choice([2,3,4,5]) # only allow movement
+                action = random.choice([0,2,3,4,5]) # only allow movement
                 # 'no-op' and 'fire' lead to poor training - perhaps after initial training, fire could be introduced
             else:
                 with torch.no_grad():
