@@ -17,9 +17,9 @@ EPSILON_START = 1.0
 EPSILON_DECAY = 0.995
 MIN_EPSILON = 0.01
 GAMMA = 0.99
-TARGET_UPDATE_FREQ = 1000
-MAX_EPISODES = 200 #500
-LEARNING_RATE = 0.001
+TARGET_UPDATE_FREQ = 10
+MAX_EPISODES = 50 #500
+LEARNING_RATE = 0.0005
 
 from collections import deque
 class ReplayBuffer:
@@ -108,7 +108,8 @@ def main():
     for episode in range(MAX_EPISODES):
         # Print out a progress update every 10 episodes
         if episode % 10 == 0:
-            print(f"Episode {episode}/{MAX_EPISODES}")
+            pass # so as to not print every episode
+        print(f"Episode {episode}/{MAX_EPISODES}")
 
         state, _ = env.reset()
 
@@ -118,7 +119,9 @@ def main():
         while not done:
             # Epsilon-greedy choice of action
             if random.random() < epsilon:
-                action = env.action_space.sample()
+                # action = env.action_space.sample()
+                action = random.choice([2,3,4,5]) # only allow movement
+                # 'no-op' and 'fire' lead to poor training - perhaps after initial training, fire could be introduced
             else:
                 with torch.no_grad():
                     # state_tensor = torch.tensor([state], dtype=torch.float32).to(device) # causes warning
