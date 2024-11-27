@@ -14,10 +14,10 @@ import torch.nn as nn
 BATCH_SIZE = 32
 
 EPSILON_START = 1.0
-EPSILON_DECAY = 0.995
+EPSILON_DECAY = 0.999 #0.995
 MIN_EPSILON = 0.01
 GAMMA = 0.99
-TARGET_UPDATE_FREQ = 10
+TARGET_UPDATE_FREQ = 20
 MAX_EPISODES = 50 #500
 LEARNING_RATE = 0.0005
 
@@ -50,6 +50,7 @@ def train(policy_nn, target_nn, replay_buffer, optimizer, batch_size, gamma, dev
     # ensure replay buffer has enough entries
     if len(replay_buffer) < batch_size:
         # can move this check to calling function instead
+        print("ERROR ENCOUNTERED")
         return
     
     states, actions, rewards, next_states, dones = replay_buffer.sample(batch_size)
@@ -108,14 +109,15 @@ def main():
     for episode in range(MAX_EPISODES):
         # Print out a progress update every 10 episodes
         if episode % 10 == 0:
-            pass # so as to not print every episode
-        print(f"Episode {episode}/{MAX_EPISODES}")
+            # pass # so as to not print every episode
+            print(f"Episode {episode}/{MAX_EPISODES}")
 
         state, _ = env.reset()
 
         total_reward = 0
         done = False
 
+        total_steps = 0
         while not done:
             # Epsilon-greedy choice of action
             if random.random() < epsilon:
@@ -137,9 +139,10 @@ def main():
             state = next_state
             total_reward += reward
 
-            # I DON'T THINK THIS IS IN THE RIGHT PLACE RELATIVE TO
-            # HOW MANY ACTIONS ARE CHOSEN
-            train(policy_nn, target_nn, replay_buffer, optimizer, BATCH_SIZE, GAMMA, device)
+            # ADJUST BATCH SIZE AND FREQUENCY OF CALLS TO TRAIN() AS NEEDED
+            if total_steps > 0 and total_steps % BATCH_SIZE == 0:
+                train(policy_nn, target_nn, replay_buffer, optimizer, BATCH_SIZE, GAMMA, device)
+            total_steps += 1
 
         # Epsilon decacys over time
         epsilon = max(MIN_EPSILON, epsilon * EPSILON_DECAY)
