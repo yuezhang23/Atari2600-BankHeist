@@ -52,7 +52,7 @@ def train(policy_agent, target_agent, replay_buffer, batch_size, device):
     states, actions, rewards, next_states, dones = replay_buffer.sample(batch_size)
 
     running_g = 0
-    discounted_rewards = []  # Use a list to accumulate discounted rewards
+    discounted_rewards = []  
 
     # Reverse the numpy array for iteration
     for r in rewards[::-1]:
@@ -60,10 +60,10 @@ def train(policy_agent, target_agent, replay_buffer, batch_size, device):
         discounted_rewards.insert(0, running_g)
 
     # convert gameplay data to tensors
-    states = torch.tensor(states, dtype=torch.float32)
-    actions = torch.tensor(actions, dtype=torch.long)
-    next_states = torch.tensor(next_states, dtype=torch.float32)
-    dones = torch.tensor(dones, dtype=torch.float32)
+    states = torch.tensor(states, dtype=torch.float32).to(device)
+    actions = torch.tensor(actions, dtype=torch.long).to(device)
+    next_states = torch.tensor(next_states, dtype=torch.float32).to(device)
+    dones = torch.tensor(dones, dtype=torch.float32).to(device)
 
     # Forward pass through policy and target networks
     action_logits, state_values = policy_agent.net(states, rewards)
@@ -103,7 +103,7 @@ def main():
                         frame_skip=5,
                         screen_size=84,
                         terminal_on_life_loss=False,
-                        grayscale_obs=True,  # set to True
+                        grayscale_obs=False,  # set to True
                         grayscale_newaxis=False,
                         scale_obs=True)
 

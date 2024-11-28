@@ -30,5 +30,6 @@ class ActorCritic:
 
         # Greedy action: choose the action with the highest logit (highest probability)
         action = torch.argmax(action_logits, dim=-1)
+        action = distrib.probs.argmax()
         return action.item()
 

@@ -7,6 +7,7 @@ class PolicyNetwork(nn.Module):
         super().__init__()
 
         input_dim = np.prod(obs_space_dims)
+        # print("Input dim: ", input_dim)
         # Shared feature extractor (Fully Connected layers)
         self.shared_net = nn.Sequential(
             nn.Linear(input_dim, 128),
