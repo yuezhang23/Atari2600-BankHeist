@@ -13,14 +13,14 @@ import torch.nn as nn
 from AT_Policy import PolicyNetwork
 from AT import ActorCritic
 
-BATCH_SIZE = 5
+BATCH_SIZE = 10
 
 EPSILON_START = 1.0
 EPSILON_DECAY = 0.999 #0.995
 MIN_EPSILON = 0.01
 GAMMA = 0.99
 TARGET_UPDATE_FREQ = 20
-MAX_EPISODES = 100 
+MAX_EPISODES = 10000
 LEARNING_RATE = 0.0005
 
 
@@ -177,9 +177,10 @@ def main():
         # Update the target network less frequently than the policy network
         if episode % TARGET_UPDATE_FREQ == 0:
             target_agent.net.load_state_dict(policy_agent.net.state_dict())
-     
-    torch.save(policy_agent.state_dict(), "policy_net.pth")
-    torch.save(target_agent.state_dict(), "target_net.pth")
+        
+        if episode % 5000 == 0:  
+            torch.save(policy_agent.state_dict(), f"policy_net_{episode}.pth")
+            torch.save(target_agent.state_dict(), f"target_net_{episode}.pth")
     print("Model saved as policy_net.pth and target_net.pth")
     env.close()
 

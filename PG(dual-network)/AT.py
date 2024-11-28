@@ -17,6 +17,7 @@ class ActorCritic:
         # state = state.flatten() if len(state.shape) > 1 else state
         action_logits, state_value = self.net(state, score)
         distrib = Categorical(logits=action_logits)
+        # random sampling 
         action = distrib.sample()
         return action.item()
 
