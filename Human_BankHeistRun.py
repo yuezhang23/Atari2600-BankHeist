@@ -48,35 +48,36 @@ ale = ALEInterface()
 ale.setInt('random_seed', 0)
 gym.register_envs(ale_py)
 env = gym.make('BankHeist-v4',frameskip=1, render_mode='human')
-
 env = AtariPreprocessing(env,
                     noop_max=30,
-                    frame_skip=5,
+                    frame_skip=10,
                     screen_size=84,
                     terminal_on_life_loss=False,
+                    # set true
                     grayscale_obs=True,
                     grayscale_newaxis=False,
                     scale_obs=True)
 
+
 pre_obs, info= env.reset(seed=5)
+cnt = 0
 
 while running:  # determine whether the game will continue
     obs, reward, done, truncated, info = env.step(action)  # use user input action
-    
-
+    cnt += 1
     diff = obs - pre_obs
     # changed_positions = np.argwhere(diff != 0)
     # changes = [(tuple(pos), diff[tuple(pos)]) for pos in changed_positions]
-    print(f"Action: {action}:\n", diff.sum())
 
     pre_obs = obs
     env.render()  # render game image
     time.sleep(0.1)  # control game flow speed
+    print(cnt)
 
     if done or truncated:
         obs, info = env.reset()
 
 listener.stop()  # stop keyboard listener
-
+print("Game Over", cnt)
 
 env.close()

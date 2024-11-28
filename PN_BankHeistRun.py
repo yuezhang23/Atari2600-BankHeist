@@ -12,7 +12,7 @@ import time
 ale = ALEInterface()
 ale.setInt('random_seed', 0)
 gym.register_envs(ale_py)
-env = gym.make('BankHeist-v4',frameskip=1)
+env = gym.make('BankHeist-v4',frameskip=1, render_mode='human')
 env = AtariPreprocessing(env,
                     noop_max=30,
                     frame_skip=4,
@@ -41,25 +41,18 @@ def train_policy_gradient(env, episodes, input_dim, output_dim):
         # pre_diff = 0
         start = time.time() 
         while not done:
-            # diff = (state - pre_state).sum()
-            # if diff == -pre_diff:
-            #     choices = [i for i in [2, 3, 4, 5] if i != action]
-            #     action = np.random.choice(choices)
-            # else:
-            # print("total reward", total_reward)
-            # pre_state = state
-            # pre_diff = diff
             action = agent.sample_action(state, total_reward)
             state, reward, terminated, truncated, info = env.step(action)
-            # num_of_lives = info["lives"]
+            num_of_lives = info["lives"]
             
             # 0.1 as a hyperparameter to penalize losing a life
             # print("time diff", time.time() - start)
-            agent.rewards.append(reward)
-            # agent.rewards.append(reward - 0.1 * (4 - num_of_lives) - (time.time() - start) * 0.001)
+            # agent.rewards.append(reward)
+            agent.rewards.append(reward - 0.1 * (4 - num_of_lives))
+            # print("rewards~~~~~~~~~", agent.rewards)
             total_reward += reward
             
-            # env.render()
+            env.render()
             done = terminated or truncated
             if done:
                 break
@@ -68,10 +61,10 @@ def train_policy_gradient(env, episodes, input_dim, output_dim):
                 torch.save(agent.net.state_dict(), f'bank_heist_model_checkpoint_{episode}.pth')
 
         reward_over_episodes.append(env.return_queue[-1])
-        agent.update()
         time_spent = time.time() - start
+        print("time spent", time_spent, "number 0f states", len(agent.rewards))
+        agent.update()
         print(f"Episode {episode + 1}/{episodes} completed.")
-        print("time spent", time_spent, "rewards", total_reward)
     return agent
    
 obs, info = env.reset(seed=10)
