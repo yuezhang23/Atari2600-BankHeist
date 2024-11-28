@@ -13,7 +13,7 @@ import torch.nn as nn
 from AT_Policy import PolicyNetwork
 from AT import ActorCritic
 
-BATCH_SIZE = 10
+BATCH_SIZE = 32
 
 EPSILON_START = 1.0
 EPSILON_DECAY = 0.999 #0.995
