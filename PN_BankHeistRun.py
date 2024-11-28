@@ -33,7 +33,7 @@ def train_policy_gradient(env, episodes, input_dim, output_dim):
     agent = REINFORCE(input_dim, output_dim)
 
     for episode in range(episodes):
-        state, reward = env.reset(seed=10)
+        state, reward = env.reset(seed=42)
       
         done = False
         total_reward = 0

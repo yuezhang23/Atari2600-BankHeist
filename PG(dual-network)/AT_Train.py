@@ -88,7 +88,7 @@ def train(policy_agent, target_agent, replay_buffer, batch_size, device):
 
     # Total loss
     total_loss = policy_loss + value_loss - 0.01 * entropy_bonus
-    print("policy_loss", policy_loss, "value_loss", value_loss)
+    # print("policy_loss", policy_loss, "value_loss", value_loss)
 
     # Backpropagation
     policy_agent.optimizer.zero_grad()
@@ -179,8 +179,8 @@ def main():
             target_agent.net.load_state_dict(policy_agent.net.state_dict())
         
         if episode % 5000 == 0:  
-            torch.save(policy_agent.state_dict(), f"policy_net_{episode}.pth")
-            torch.save(target_agent.state_dict(), f"target_net_{episode}.pth")
+            torch.save(policy_agent.net.state_dict(), f"policy_net_{episode}.pth")
+            torch.save(target_agent.net.state_dict(), f"target_net_{episode}.pth")
     print("Model saved as policy_net.pth and target_net.pth")
     env.close()
 
