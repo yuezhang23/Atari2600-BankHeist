@@ -2,6 +2,7 @@ import random
 import ale_py
 from ale_py import ALEInterface
 import gymnasium as gym
+from gymnasium.wrappers import FrameStackObservation
 import numpy as np
 import torch
 from Preprocess_env import AtariPreprocessing
@@ -11,15 +12,19 @@ import time
 # from replay_buffer import ReplayBuffer
 import torch.nn as nn
 
-BATCH_SIZE = 32
+BATCH_SIZE = 32 #32
 
-EPSILON_START = 1.0
-EPSILON_DECAY = 0.999 #0.995
-MIN_EPSILON = 0.01
-GAMMA = 0.99
-TARGET_UPDATE_FREQ = 20
-MAX_EPISODES = 50 #500
-LEARNING_RATE = 0.0005
+EPSILON_START = 1.0     #1.0
+EPSILON_DECAY = 0.9995  #0.9995
+MIN_EPSILON = 0.01      #0.01
+GAMMA = 0.99            #0.99
+TARGET_UPDATE_FREQ = 20 #20
+MAX_EPISODES = 2000     #2000
+LEARNING_RATE = 0.0001  #0.0001
+
+SEED = 42 #42
+
+param_str = f"BS={BATCH_SIZE} ES={EPSILON_START} ED={EPSILON_DECAY} EM={MIN_EPSILON} G={GAMMA} TUF={TARGET_UPDATE_FREQ} ME={MAX_EPISODES} LR={LEARNING_RATE} SEED={SEED}"
 
 from collections import deque
 class ReplayBuffer:
@@ -62,6 +67,16 @@ def train(policy_nn, target_nn, replay_buffer, optimizer, batch_size, gamma, dev
     next_states = torch.tensor(next_states, dtype=torch.float32).to(device)
     dones = torch.tensor(dones, dtype=torch.float32).to(device)
 
+    # print(states.shape)
+
+    # states = torch.tensor(states, dtype=torch.float32).permute(0, 1, 4, 2, 3)  # [B, 4, 84, 84, 3] -> [B, 4, 3, 84, 84]
+    states = states.reshape(states.size(0), -1, 84, 84).to(device)  # [B, 4, 3, 84, 84] -> [B, 12, 84, 84]
+
+    # next_states = torch.tensor(next_states, dtype=torch.float32).permute(0, 1, 4, 2, 3)
+    next_states = next_states.reshape(next_states.size(0), -1, 84, 84).to(device)
+
+    # print(states.shape)
+
     # Compute Q-values
     q_values = policy_nn(states).gather(1, actions.unsqueeze(1)).squeeze(1)
     
@@ -93,11 +108,24 @@ def main():
                         grayscale_obs=False,
                         grayscale_newaxis=False,
                         scale_obs=True)
+    
+    num_frames = 4
+    env = FrameStackObservation(env, stack_size=num_frames)
 
     # Create CNNS
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    policy_nn = CNN(in_channels=3, num_actions=env.action_space.n).to(device)
-    target_nn = CNN(in_channels=3, num_actions=env.action_space.n).to(device)
+    # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+        print("CUDA available! Training on GPU.", flush=True)
+    elif torch.backends.mps.is_available():
+        device = torch.device('mps')
+        print("MPS available! Training on GPU.", flush=True)
+    else:
+        device = torch.device('cpu')
+        print("CUDA NOT available... Training on CPU.", flush=True)
+
+    policy_nn = CNN(in_channels=12, num_actions=env.action_space.n).to(device)
+    target_nn = CNN(in_channels=12, num_actions=env.action_space.n).to(device)
 
     # Create optimizer and replay buffer
     optimizer = torch.optim.Adam(policy_nn.parameters(), lr=LEARNING_RATE)
@@ -112,7 +140,9 @@ def main():
             # pass # so as to not print every episode
             print(f"Episode {episode}/{MAX_EPISODES}")
 
-        state, _ = env.reset()
+        state, _ = env.reset(seed=SEED)
+
+        # print(state.shape)
 
         total_reward = 0
         done = False
@@ -128,6 +158,7 @@ def main():
                 with torch.no_grad():
                     # state_tensor = torch.tensor([state], dtype=torch.float32).to(device) # causes warning
                     state_tensor = torch.from_numpy(state).unsqueeze(0).float().to(device) # faster and warning-free
+                    state_tensor = state_tensor.reshape(1, -1, 84, 84)
                     action = policy_nn(state_tensor).argmax().item()
 
             # Take the chosen action in the environment; update state accordingly
@@ -152,8 +183,8 @@ def main():
             target_nn.load_state_dict(policy_nn.state_dict())
 
     # After training episodes are complete, save the trained CNNs
-    torch.save(policy_nn.state_dict(), "policy_nn.pth")
-    torch.save(target_nn.state_dict(), "target_nn.pth")
+    torch.save(policy_nn.state_dict(), f"policy_nn_{param_str}.pth")
+    torch.save(target_nn.state_dict(), f"target_nn_{param_str}.pth")
     print("Model saved as policy_nn.pth and target_nn.pth")
 
     env.close()
