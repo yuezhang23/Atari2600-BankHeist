@@ -1,20 +1,24 @@
 import torch
 import torch.nn as nn
+from cnn import CNN
 
 class PolicyNetwork(nn.Module):
     def __init__(self, obs_space_dims: tuple, action_space_dims: int):
         super().__init__()
         
         # Shared feature extractor (CNN layers)
-        self.shared_net = nn.Sequential(
-            nn.Conv2d(1, 32, kernel_size=8, stride=4),
-            nn.ReLU(),
-            nn.Conv2d(32, 64, kernel_size=4, stride=2),
-            nn.ReLU(),
-            nn.Conv2d(64, 64, kernel_size=3, stride=1),
-            nn.ReLU(),
-            nn.Flatten()
-        )
+        # self.shared_net = nn.Sequential(
+        #     nn.Conv2d(1, 32, kernel_size=8, stride=4),
+        #     nn.ReLU(),
+        #     nn.Conv2d(32, 64, kernel_size=4, stride=2),
+        #     nn.ReLU(),
+        #     nn.Conv2d(64, 64, kernel_size=3, stride=1),
+        #     nn.ReLU(),
+        #     nn.Flatten()
+        # )
+
+        # Shared feature extractor (CNN)
+        self.shared_net = CNN(3, 18)
         
         # Define the size of the flattened features
         flattened_size = 64 * 7 * 7  # Change based on input dimensions
