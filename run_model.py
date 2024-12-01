@@ -7,8 +7,12 @@ import torch
 from Preprocess_env import AtariPreprocessing
 from cnn import cnn as CNN
 import matplotlib.pyplot as plt
+from matplotlib.animation import PillowWriter
+from PIL import Image
 import time
 import random
+
+frames = []
 
 actions_dict = {
     0: "NOOP",
@@ -74,6 +78,9 @@ def run_agent(training_file, gui=False, random_start=False):
     frame_skip = 1
     frame_counter = 0 
 
+    fig, axs = plt.subplots(1, 2, gridspec_kw={'width_ratios': [2, 1]})  # 3:1 width ratio
+    fig.set_size_inches(8,4)
+
     # Gameplay loop
     while not done:
         if frame_counter % frame_skip == 0:
@@ -114,38 +121,68 @@ def run_agent(training_file, gui=False, random_start=False):
 
         if gui:
             # Clear the current figure
-            plt.clf()
+            # plt.clf()
+            axs[0].cla()
+            axs[1].cla()
 
             # Plot game state
-            plt.subplot(1, 2, 1)
+
             # print(state[-1].shape)
+            
             state_to_plot = state[-1] # np.transpose(state[-1]) #, (1, 2, 0))
-            plt.imshow(state_to_plot)
-            plt.axis("off")
-            plt.title(f'Current Frame\nChosen Action: {actions_dict[action]}')
-            plt.text(
+            axs[0].imshow(state_to_plot)
+            axs[0].axis("off")
+            axs[0].set_title(f'Current Frame\nChosen Action: {actions_dict[action]}')
+            axs[0].text(
                 0.5, -0.1,  # Coordinates relative to the subplot
                 f"Reward: ${total_reward:.0f}", # Text
                 fontsize=12, ha="center", va="center", # Formatting
-                transform=plt.gca().transAxes  # Anchor text to the axis
+                transform=axs[0].transAxes  # Anchor text to the axis
             )
 
             # Plot Q-values
-            plt.subplot(1, 2, 2)
             if action_choices is not None:
                 q_values = action_choices[0].cpu().numpy()
-                plt.bar(range(env.action_space.n), q_values)
-                plt.bar(range(len(q_values)), q_values, tick_label=list(actions_dict.values()))
-                plt.xticks(rotation=90)
-                plt.xlabel("Actions")
-                plt.ylabel("Q-values")
-                plt.title('Q-values for each action')
+                axs[1].bar(range(env.action_space.n), q_values)
+                axs[1].bar(range(len(q_values)), q_values, tick_label=list(actions_dict.values()))
+                axs[1].set_xticks(range(len(q_values)))
+                axs[1].set_xticklabels(list(actions_dict.values()), rotation=90, fontsize=6)
+                axs[1].set_xlabel("Actions")
+                axs[1].set_ylabel("Q-values")
+                axs[1].set_title('Q-values for each action')
+
+                axs[1].text(0.5, 1.1, ' ', ha='center', va='center', transform=axs[1].transAxes, fontsize=10)
+                axs[1].text(0.5, -0.15, ' ', ha='center', va='center', transform=axs[1].transAxes, fontsize=10)
 
             # Update the display
             plt.draw()
+
+            plt.savefig(f"./anim/temp_frame_{frame_counter}.png")  # Save the current frame as a temporary image
+            # frames.append(Image.open("temp_frame.png"))
+
             plt.pause(0.1)
 
         frame_counter += 1
+
+        # shorten run for gif generation
+        if total_reward > 100:
+            done = True
+
+    # gif_path = "bank_heist_gameplay.gif"
+    # with PillowWriter(fps=10) as writer:  # Adjust FPS as needed
+    #     for frame in frames:
+    #         writer.grab_frame(frame.canvas)
+    # print(f"GIF saved at {gif_path}")
+
+    gif_path = "bank_heist_gameplay.gif"
+    frames[0].save(
+        gif_path,
+        save_all=True,
+        append_images=frames[1:],  # Add the rest of the frames
+        duration=100,  # Duration per frame in milliseconds
+        loop=0  # Infinite loop
+    )
+    print(f"GIF saved at {gif_path}")
 
     env.close()
     return total_reward
@@ -181,9 +218,10 @@ def main():
     # filename = "./nn_weights/policy_nn_BS=32 ES=1.0 ED=0.9995 EM=0.01 G=0.99 TUF=20 ME=800 LR=0.0001 SEED=42 RS=True.pth" # random start try #1 (didn't work)
     # filename = "./nn_weights/target_nn_BS=32 ES=1.0 ED=0.9999 EM=0.01 G=0.99 TUF=20 ME=1000 LR=0.0001 SEED=42 RS=True.pth" # random start try #2 (disallow inf. repetition)
     # filename = "./nn_weights/policy_nn_BS=32 ES=1.0 ED=0.9995 EM=0.01 G=0.99 TUF=20 ME=200 LR=0.0001 SEED=42 RS=True.pth" # all the bells and whistles (frame skip, actually fixed repetition)
-    filename = "./nn_weights/policy_nn_BS=32 ES=1.0 ED=0.997 EM=0.01 G=0.99 TUF=20 ME=1000 LR=0.0001 SEED=42 RS=True.pth"
-    run_episodes(20, False, filename, random_start=False) # collect data on trials
-    # run_episodes(1, True, filename, random_start=False)   # visualize actions
+    # filename = "./nn_weights/policy_nn_BS=32 ES=1.0 ED=0.997 EM=0.01 G=0.99 TUF=20 ME=1000 LR=0.0001 SEED=42 RS=True.pth"
+    filename = "./nn_weights/target_nn_BS=32 ES=1.0 ED=0.9998 EM=0.01 G=0.99 TUF=20 ME=10000 LR=0.0001 SEED=42 RS=True.pth"
+    # run_episodes(20, False, filename, random_start=False) # collect data on trials
+    run_episodes(1, True, filename, random_start=False)   # visualize actions
 
 if __name__ == "__main__":
     main()

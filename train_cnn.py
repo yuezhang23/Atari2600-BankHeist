@@ -16,11 +16,11 @@ from collections import deque
 BATCH_SIZE = 32 #32
 
 EPSILON_START = 1.0     #1.0
-EPSILON_DECAY = 0.997  #0.9995
+EPSILON_DECAY = 0.9998  #0.9995
 MIN_EPSILON = 0.01      #0.01
 GAMMA = 0.99            #0.99
 TARGET_UPDATE_FREQ = 20 #20
-MAX_EPISODES = 1000     #2000
+MAX_EPISODES = 10000     #2000
 LEARNING_RATE = 0.0001  #0.0001
 
 SEED = 42 #42
@@ -95,6 +95,8 @@ def train(policy_nn, target_nn, replay_buffer, optimizer, batch_size, gamma, dev
     loss.backward()
     optimizer.step()
 
+    return loss
+
 def main():
     '''
     Initialize a gym environment of the "Bank Heist" Atari game
@@ -136,13 +138,14 @@ def main():
 
     epsilon = EPSILON_START
     max_reward = 0
+    loss = 0
 
     # Train over a defined number of gameplay episodes
     for episode in range(MAX_EPISODES):
         # Print out a progress update every 10 episodes
         if episode % 10 == 0:
             # pass # so as to not print every episode
-            print(f"Episode {episode}/{MAX_EPISODES} --- Epsilon={epsilon:.2f} --- Max Reward: {max_reward}")
+            print(f"Episode {episode}/{MAX_EPISODES} --- Epsilon={epsilon:.3f} --- Loss={loss} --- Max Reward: {max_reward}")
 
         state, _ = env.reset(seed=SEED)
 
@@ -214,7 +217,7 @@ def main():
 
             # ADJUST BATCH SIZE AND FREQUENCY OF CALLS TO TRAIN() AS NEEDED
             if total_steps > 0 and total_steps % BATCH_SIZE == 0:
-                train(policy_nn, target_nn, replay_buffer, optimizer, BATCH_SIZE, GAMMA, device)
+                loss = train(policy_nn, target_nn, replay_buffer, optimizer, BATCH_SIZE, GAMMA, device)
             total_steps += 1
             frame_counter += 1
 
