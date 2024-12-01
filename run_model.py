@@ -151,9 +151,6 @@ def run_agent(training_file, gui=False, random_start=False):
                 axs[1].set_ylabel("Q-values")
                 axs[1].set_title('Q-values for each action')
 
-                axs[1].text(0.5, 1.1, ' ', ha='center', va='center', transform=axs[1].transAxes, fontsize=10)
-                axs[1].text(0.5, -0.15, ' ', ha='center', va='center', transform=axs[1].transAxes, fontsize=10)
-
             # Update the display
             plt.draw()
 
@@ -174,15 +171,15 @@ def run_agent(training_file, gui=False, random_start=False):
     #         writer.grab_frame(frame.canvas)
     # print(f"GIF saved at {gif_path}")
 
-    gif_path = "bank_heist_gameplay.gif"
-    frames[0].save(
-        gif_path,
-        save_all=True,
-        append_images=frames[1:],  # Add the rest of the frames
-        duration=100,  # Duration per frame in milliseconds
-        loop=0  # Infinite loop
-    )
-    print(f"GIF saved at {gif_path}")
+    # gif_path = "bank_heist_gameplay.gif"
+    # frames[0].save(
+    #     gif_path,
+    #     save_all=True,
+    #     append_images=frames[1:],  # Add the rest of the frames
+    #     duration=100,  # Duration per frame in milliseconds
+    #     loop=0  # Infinite loop
+    # )
+    # print(f"GIF saved at {gif_path}")
 
     env.close()
     return total_reward
