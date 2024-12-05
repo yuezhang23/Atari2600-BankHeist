@@ -71,14 +71,13 @@ def train(policy_nn, target_nn, replay_buffer, optimizer, batch_size, gamma, dev
     dones = torch.tensor(dones, dtype=torch.float32).to(device)
 
     # print(states.shape)
-
     # states = torch.tensor(states, dtype=torch.float32).permute(0, 1, 4, 2, 3)  # [B, 4, 84, 84, 3] -> [B, 4, 3, 84, 84]
-    states = states.reshape(states.size(0), -1, 84, 84).to(device)  # [B, 4, 3, 84, 84] -> [B, 12, 84, 84]
-
     # next_states = torch.tensor(next_states, dtype=torch.float32).permute(0, 1, 4, 2, 3)
-    next_states = next_states.reshape(next_states.size(0), -1, 84, 84).to(device)
-
     # print(states.shape)
+
+    # merge 
+    states = states.reshape(states.size(0), -1, 84, 84).to(device)  # [B, 4, 3, 84, 84] -> [B, 12, 84, 84]
+    next_states = next_states.reshape(next_states.size(0), -1, 84, 84).to(device)
 
     # Compute Q-values
     q_values = policy_nn(states).gather(1, actions.unsqueeze(1)).squeeze(1)

@@ -1,18 +1,21 @@
-import ale_py
-from ale_py import ALEInterface
+# import Atari environment
 import gymnasium as gym
 from gymnasium.wrappers import FrameStackObservation
-import numpy as np
-import torch
+import ale_py
+from ale_py import ALEInterface
+
+# import project files
 from Preprocess_env import AtariPreprocessing
 from cnn import cnn as CNN
+
+# import nn dependencies
+import numpy as np
+import torch
 import matplotlib.pyplot as plt
-from matplotlib.animation import PillowWriter
-from PIL import Image
+
+# general imports
 import time
 import random
-
-frames = []
 
 actions_dict = {
     0: "NOOP",
@@ -84,14 +87,16 @@ def run_agent(training_file, gui=False, random_start=False):
     # Gameplay loop
     while not done:
         if frame_counter % frame_skip == 0:
+            # randomize start
             if moves < 100 and random_start:
                 action_choices = None
-                # action_choices = torch.tensor([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
 
+                # first, move right, away from the start location
                 if moves < 10:
                     action = 3
                     state, reward, done, truncated, _ = env.step(3) # right
 
+                # then, move up or down, further away from the start location
                 elif moves < 20:
                     if random.random() > 0.5:
                         action = 2
@@ -100,12 +105,13 @@ def run_agent(training_file, gui=False, random_start=False):
                         action = 5
                         state, reward, done, truncated, _= env.step(5) # down
                 
+                # move randomly (not left) into the maze
                 else:
                     action = random.choice([0,2,3,5])
                     state, reward, done, truncated, _ = env.step(action)
                 
                 moves += 1
-
+            # CNN chooses moves based on current state
             else:
                 with torch.no_grad():
                     state_tensor = torch.from_numpy(state).unsqueeze(0).float().to(device)
@@ -126,9 +132,6 @@ def run_agent(training_file, gui=False, random_start=False):
             axs[1].cla()
 
             # Plot game state
-
-            # print(state[-1].shape)
-            
             state_to_plot = state[-1] # np.transpose(state[-1]) #, (1, 2, 0))
             axs[0].imshow(state_to_plot)
             axs[0].axis("off")
@@ -153,33 +156,15 @@ def run_agent(training_file, gui=False, random_start=False):
 
             # Update the display
             plt.draw()
-
-            plt.savefig(f"./anim/temp_frame_{frame_counter}.png")  # Save the current frame as a temporary image
-            # frames.append(Image.open("temp_frame.png"))
-
+            plt.savefig(f"./anim/temp_frame_{frame_counter:04}.png")  # Save the current frame as a temporary image
             plt.pause(0.1)
 
         frame_counter += 1
 
         # shorten run for gif generation
         if total_reward > 100:
-            done = True
-
-    # gif_path = "bank_heist_gameplay.gif"
-    # with PillowWriter(fps=10) as writer:  # Adjust FPS as needed
-    #     for frame in frames:
-    #         writer.grab_frame(frame.canvas)
-    # print(f"GIF saved at {gif_path}")
-
-    # gif_path = "bank_heist_gameplay.gif"
-    # frames[0].save(
-    #     gif_path,
-    #     save_all=True,
-    #     append_images=frames[1:],  # Add the rest of the frames
-    #     duration=100,  # Duration per frame in milliseconds
-    #     loop=0  # Infinite loop
-    # )
-    # print(f"GIF saved at {gif_path}")
+            pass
+            # done = True  # enable to limit run length for image/gif generation
 
     env.close()
     return total_reward
@@ -218,7 +203,7 @@ def main():
     # filename = "./nn_weights/policy_nn_BS=32 ES=1.0 ED=0.997 EM=0.01 G=0.99 TUF=20 ME=1000 LR=0.0001 SEED=42 RS=True.pth"
     filename = "./nn_weights/target_nn_BS=32 ES=1.0 ED=0.9998 EM=0.01 G=0.99 TUF=20 ME=10000 LR=0.0001 SEED=42 RS=True.pth"
     # run_episodes(20, False, filename, random_start=False) # collect data on trials
-    run_episodes(1, True, filename, random_start=False)   # visualize actions
+    run_episodes(1, True, filename, random_start=True)   # visualize actions
 
 if __name__ == "__main__":
     main()

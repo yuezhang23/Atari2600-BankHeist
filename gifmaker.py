@@ -21,6 +21,9 @@ def create_gif_from_pngs(folder_path, gif_path, duration=100):
     # Load images
     images = [Image.open(os.path.join(folder_path, file)) for file in png_files]
 
+    first_image_size = images[0].size
+    images = [img.resize(first_image_size, Image.Resampling.LANCZOS) for img in images]
+
     # Save the first image as GIF and append the rest
     images[0].save(
         gif_path,
@@ -34,5 +37,5 @@ def create_gif_from_pngs(folder_path, gif_path, duration=100):
 # Example usage
 if __name__ == "__main__":
     folder = "./anim"  # Replace with the folder path containing PNGs
-    output_gif = "anim.gif"  # Replace with your desired GIF file name
+    output_gif = "anim_long.gif"  # Replace with your desired GIF file name
     create_gif_from_pngs(folder, output_gif)
