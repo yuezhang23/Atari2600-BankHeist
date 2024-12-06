@@ -1,0 +1,172 @@
+Trial 1: 20 episodes
+Reward: 1050.0 | Runtime: 2.8284457999980077
+Reward: 1060.0 | Runtime: 2.7634875000221655
+Reward: 1070.0 | Runtime: 2.793752300029155
+Reward: 1070.0 | Runtime: 2.8088631000136957
+Reward: 1040.0 | Runtime: 2.7564997999579646
+Reward: 1070.0 | Runtime: 2.8591599999926984
+Reward: 1050.0 | Runtime: 2.879336699959822
+Reward: 1070.0 | Runtime: 2.7879751000436954
+Reward: 1050.0 | Runtime: 2.8341318999882787
+Reward: 1060.0 | Runtime: 2.9006212999811396
+Reward: 1060.0 | Runtime: 2.8203403999796137
+Reward: 1060.0 | Runtime: 2.7625527000054717
+Reward: 1050.0 | Runtime: 2.9466831000172533
+Reward: 1040.0 | Runtime: 2.8802675000042655
+Reward: 1060.0 | Runtime: 2.867815800011158
+Reward: 1060.0 | Runtime: 2.925205899984576
+Reward: 1050.0 | Runtime: 2.7654158999794163
+Reward: 1040.0 | Runtime: 2.844011800014414
+Reward: 1060.0 | Runtime: 2.8276155999628827
+Reward: 1040.0 | Runtime: 2.8151094999630004
+ 
+
+Trial 2: 20 episodes
+NOTE: 5 trials had high runtimes and lower-than-normal rewards: these signify a different behavior happening
+
+Reward: 1040.0 | Runtime: 2.8979740000213496
+Reward: 940.0 | Runtime: 35.03852669999469
+Reward: 950.0 | Runtime: 35.1440821000142
+Reward: 1060.0 | Runtime: 2.7116146000334993
+Reward: 1050.0 | Runtime: 2.7500892999814823
+Reward: 1050.0 | Runtime: 2.757479199965019
+Reward: 1050.0 | Runtime: 2.838518499978818
+Reward: 1050.0 | Runtime: 2.8188562000286765
+Reward: 1050.0 | Runtime: 2.793433199985884
+Reward: 950.0 | Runtime: 35.08461730001727
+Reward: 1040.0 | Runtime: 2.8086844999925233
+Reward: 940.0 | Runtime: 35.206494999991264
+Reward: 940.0 | Runtime: 35.567639900022186
+Reward: 1070.0 | Runtime: 2.7994405000354163
+Reward: 1060.0 | Runtime: 2.7968860999681056
+Reward: 1060.0 | Runtime: 2.830599900044035
+Reward: 1050.0 | Runtime: 2.804562299977988
+Reward: 1060.0 | Runtime: 2.8425236000330187
+Reward: 1050.0 | Runtime: 2.803111399989575
+Reward: 1050.0 | Runtime: 2.7992311000125483
+
+
+Trial 3: 20 episodes
+NOTE: Similar reward to Trial 1/2, but slightly higher runtimes (performance difference due to laptop not being plugged in)
+
+Reward: 1040.0 | Runtime: 4.176820399996359
+Reward: 1040.0 | Runtime: 4.1674933999893256
+Reward: 1040.0 | Runtime: 4.117544100037776
+Reward: 1050.0 | Runtime: 4.403133500018157
+Reward: 1040.0 | Runtime: 4.288275099999737
+Reward: 1060.0 | Runtime: 4.3096498000086285
+Reward: 1060.0 | Runtime: 4.188813799992204
+Reward: 1050.0 | Runtime: 4.137416300014593
+Reward: 1040.0 | Runtime: 4.167208900034893
+Reward: 1050.0 | Runtime: 5.1032783999689855
+Reward: 1040.0 | Runtime: 4.484891699976288
+Reward: 1060.0 | Runtime: 4.472924400004558
+Reward: 950.0 | Runtime: 52.87935189995915
+Reward: 1050.0 | Runtime: 4.006938599981368
+Reward: 950.0 | Runtime: 52.085089200001676
+Reward: 1040.0 | Runtime: 4.267923199979123
+Reward: 1040.0 | Runtime: 4.337569799972698
+Reward: 940.0 | Runtime: 57.91241549997358
+Reward: 1060.0 | Runtime: 4.3579194999765605
+Reward: 1050.0 | Runtime: 4.269074300013017
+
+
+Trial 4: 20 episodes
+NOTE: Start position randomized with random exploration; rewards lower and more variable
+
+Reward: 450.0 | Runtime: 7.044422100007068
+Reward: 450.0 | Runtime: 6.88513679994503
+Reward: 950.0 | Runtime: 3.6951900999993086
+Reward: 910.0 | Runtime: 3.6090236000018194
+Reward: 450.0 | Runtime: 6.822898300015368
+Reward: 440.0 | Runtime: 7.145072099985555
+Reward: 440.0 | Runtime: 7.237956200027838
+Reward: 450.0 | Runtime: 7.057093400042504
+Reward: 450.0 | Runtime: 7.325077700021211
+Reward: 440.0 | Runtime: 7.156550000014249
+Reward: 440.0 | Runtime: 7.262324400013313
+Reward: 440.0 | Runtime: 6.916034599998966
+Reward: 440.0 | Runtime: 6.890110699983779
+Reward: 450.0 | Runtime: 6.849905900016893
+Reward: 440.0 | Runtime: 6.913395400042646
+Reward: 440.0 | Runtime: 6.859023900004104
+Reward: 440.0 | Runtime: 6.862959699996281
+Reward: 440.0 | Runtime: 7.115542199986521
+Reward: 450.0 | Runtime: 6.963500700017903
+Reward: 450.0 | Runtime: 6.786709800013341
+
+
+Trial 5: 20 episodes
+filename = "policy_nn_BS=32 ES=1.0 ED=0.9999 EM=0.01 G=0.99 TUF=20 ME=1000 LR=0.0001 SEED=42 RS=True.pth"
+Random start, avoid getting stuck doing the same action forever - POLICY NN
+
+Reward: 220.0 | Runtime: 1.5469112999853678
+Reward: 170.0 | Runtime: 4.402181900048163
+Reward: 180.0 | Runtime: 4.488874499977101
+Reward: 180.0 | Runtime: 4.437521299987566
+Reward: 190.0 | Runtime: 4.461004299984779
+Reward: 360.0 | Runtime: 1.916937300004065
+Reward: 180.0 | Runtime: 4.423950799973682
+Reward: 110.0 | Runtime: 4.076673800009303
+Reward: 370.0 | Runtime: 1.8729711000341922
+Reward: 110.0 | Runtime: 4.142698499956168
+Reward: 180.0 | Runtime: 4.437077200040221
+Reward: 170.0 | Runtime: 4.397729899967089
+Reward: 210.0 | Runtime: 1.2678841999731958
+Reward: 170.0 | Runtime: 4.413806899974588
+Reward: 180.0 | Runtime: 4.489602799993008
+Reward: 190.0 | Runtime: 4.495281799987424
+Reward: 180.0 | Runtime: 4.851618899963796
+Reward: 190.0 | Runtime: 4.56498109997483
+Reward: 110.0 | Runtime: 4.193887599976733
+Reward: 370.0 | Runtime: 2.015341799997259
+
+
+Trial 6: 20 episodes
+filename = "target_nn_BS=32 ES=1.0 ED=0.9999 EM=0.01 G=0.99 TUF=20 ME=1000 LR=0.0001 SEED=42 RS=True.pth"
+Random start, avoid getting stuck doing the same action forever - TARGET NN
+
+Reward: 680.0 | Runtime: 2.7199842000263743
+Reward: 590.0 | Runtime: 35.55825709999772
+Reward: 660.0 | Runtime: 2.635470000037458
+Reward: 590.0 | Runtime: 35.734427399991546
+Reward: 750.0 | Runtime: 13.811059200030286
+Reward: 660.0 | Runtime: 2.668135399988387
+Reward: 600.0 | Runtime: 35.356798099994194
+Reward: 590.0 | Runtime: 37.43735919997562
+Reward: 580.0 | Runtime: 37.08909169997787
+Reward: 670.0 | Runtime: 2.6807350000017323
+Reward: 660.0 | Runtime: 2.6903236999642104
+Reward: 660.0 | Runtime: 2.6539936999906786
+Reward: 650.0 | Runtime: 2.7019254999468103
+Reward: 750.0 | Runtime: 13.979197400039993
+Reward: 600.0 | Runtime: 35.73377280001296
+Reward: 590.0 | Runtime: 36.177030400023796
+Reward: 740.0 | Runtime: 2.8727638999698684
+Reward: 660.0 | Runtime: 2.6030050999834202
+Reward: 600.0 | Runtime: 35.73587309999857
+Reward: 590.0 | Runtime: 35.77502900001127
+
+
+Trial 7: 20 episodes
+10,000 training episodes, still learned explorationReward: 1590.0 | Runtime: 2.8131899000145495
+
+Reward: 1670.0 | Runtime: 2.766472499934025
+Reward: 1670.0 | Runtime: 2.7936765999766067
+Reward: 1670.0 | Runtime: 2.9811654000077397
+Reward: 1650.0 | Runtime: 2.791844899998978
+Reward: 1670.0 | Runtime: 2.9236670000245795
+Reward: 1690.0 | Runtime: 2.7554516999516636
+Reward: 1710.0 | Runtime: 2.8458881999831647
+Reward: 1590.0 | Runtime: 2.748879500082694
+Reward: 1670.0 | Runtime: 2.7383549000369385
+Reward: 1610.0 | Runtime: 2.741909099975601
+Reward: 1650.0 | Runtime: 2.742809500079602
+Reward: 1650.0 | Runtime: 2.70477089995984
+Reward: 1670.0 | Runtime: 2.814273099997081
+Reward: 1690.0 | Runtime: 2.8090960000408813
+Reward: 1670.0 | Runtime: 2.7298127999529243
+Reward: 1660.0 | Runtime: 2.7717657999601215
+Reward: 1660.0 | Runtime: 2.6924496999708936
+Reward: 1670.0 | Runtime: 2.8191724999342114
+Reward: 1610.0 | Runtime: 2.7113921999698505
