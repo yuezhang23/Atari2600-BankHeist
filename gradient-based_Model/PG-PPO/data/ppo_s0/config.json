@@ -12,7 +12,7 @@
     "gamma":	0.99,
     "lam":	0.97,
     "logger":	{
-        "<logx.EpochLogger object at 0x17d03ba60>":	{
+        "<logx.EpochLogger object at 0x16285cb20>":	{
             "epoch_dict":	{},
             "exp_name":	"ppo",
             "first_row":	true,
