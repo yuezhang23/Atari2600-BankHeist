@@ -1,10 +1,10 @@
 import random
 import ale_py
 from ale_py import ALEInterface
+from Preprocess_env import AtariPreprocessing
 import gymnasium as gym
 import numpy as np
 import torch
-from Preprocess_env import AtariPreprocessing
 import matplotlib.pyplot as plt
 import time
 # from replay_buffer import ReplayBuffer

@@ -47,7 +47,7 @@ listener.start()
 ale = ALEInterface()
 ale.setInt('random_seed', 0)
 gym.register_envs(ale_py)
-env = gym.make('BankHeist-v4',frameskip=1, render_mode='human')
+env = gym.make('BankHeist-v4',frameskip=1)
 env = AtariPreprocessing(env,
                     noop_max=30,
                     frame_skip=10,
