@@ -9,3 +9,4 @@ This folder contains three AI models, detailed below, that were created and trai
 
 ## Gradient-Based Model
 * This folder implements gradient-based methods to train RL agents, with a focus on Proximal Policy Optimization (PPO) as the most effective approach. While simpler methods like the REINFORCE algorithm (PG-single) and a dual-network actor-critic model (PG-dual-fnn-a2c) show limited success, PPO achieves meaningful results through techniques like clipping and entropy regularization. Extensive hyperparameter tuning was conducted based on PPO.
+# BankHeist
